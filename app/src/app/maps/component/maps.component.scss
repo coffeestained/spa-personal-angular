@@ -1,0 +1,15 @@
+@import "https://js.arcgis.com/4.28/@arcgis/core/assets/esri/themes/light/main.css";
+
+:host {
+    height: 100%;
+    display: flex;
+
+    > div.map-container {
+        display: flex;
+        flex: 1;
+
+        > div#map {
+            flex: 1;
+        }
+    }
+}
