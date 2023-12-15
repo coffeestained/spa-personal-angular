@@ -13,6 +13,8 @@ import LayerList from "@arcgis/core/widgets/LayerList";
 import CustomContent from "@arcgis/core/popup/content/CustomContent";
 import { fromJSON } from "@arcgis/core/renderers/support/jsonUtils";
 import { setLocale } from "@arcgis/core/intl";
+import { BehaviorSubject, subscribeOn } from 'rxjs';
+import { SharedService } from 'spa-personal-shared-service';
 
 @Component({
   selector: 'app-maps',
@@ -21,21 +23,38 @@ import { setLocale } from "@arcgis/core/intl";
 })
 export class MapsComponent implements AfterViewInit {
 
+    private currentTheme!: string;
+
     @ViewChild('map') map!: ElementRef;
 
     constructor() {
+        // Inits Module Federation Shared Service
+        new SharedService(window);
         this._initConfg();
-    }
-
-    ngAfterViewInit(): void {
-        this._loadMap();
+        this._registerListeners();
     }
 
     private _initConfg() {
         this._setLocale("en-US");
     }
 
+    private _registerListeners() {
+        (window.__SharedService__.classes?.Observables.get('theme') as BehaviorSubject<string>)
+            .subscribe((theme) => {
+                console.log(theme);
+                this.currentTheme = theme;
+            });
+    }
+
+    ngAfterViewInit(): void {
+        this._loadMap();
+    }
+
     private _setLocale = setLocale;
+
+    private _changeBaseMap() {
+
+    }
 
     private _loadMap() {
 
@@ -584,7 +603,7 @@ export class MapsComponent implements AfterViewInit {
 
         const map = new Map({
             basemap: basemap,
-            layers: [parcel_feature, zoning_feature, site_address_feature]
+            layers: [ parcel_feature, zoning_feature, site_address_feature ]
         });
 
         const view = new MapView({
