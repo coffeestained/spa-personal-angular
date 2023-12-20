@@ -23,7 +23,7 @@
     "@arcgis/core": "^4.28.10",
     "@arcgis/webpack-plugin": "^4.22.0",
     "rxjs": "~7.8.0",
-    "spa-personal-shared-service": "^0.1.1",
+    "spa-personal-shared-service": "^0.14.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"
   },
