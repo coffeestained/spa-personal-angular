@@ -1,0 +1,60 @@
+# This workflow will build and push a node.js application to a linux server when a commit is pushed to your default branch.
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20.x' # set this to the node version to use
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: npm install, build, and test
+      run: |
+        cd app
+        npm ci
+        npm run build --if-present
+
+    - name: Upload artifact for deployment job
+      uses: actions/upload-artifact@v3
+      with:
+        name: app
+        path: app/dist
+
+  deploy:
+    permissions:
+      contents: none
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - name: Download artifact from build job
+      uses: actions/download-artifact@v3
+      with:
+        name: app
+
+    - name: 'Deploy to Server'
+      id: deploy-to-server
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{secrets.HOST}} # IP address of the server you wish to ssh into
+        key: ${{secrets.TOKEN}} # Private or public key of the server
+        username: ${{ secrets.USER }} # User of the server you want to ssh into
+        source: '/home/runner/work/pwa-personal-angular/pwa-personal-angular' # The directory of the files you want to copy
+        target: '/var/www' # The directory you want to copy the files to
+        overwrite: true
+        strip_components: 2
