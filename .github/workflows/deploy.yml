@@ -33,8 +33,8 @@ jobs:
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v3
       with:
-        name: app
-        path: app/dist
+        name: shell
+        path: shell/dist
 
   deploy:
     permissions:
@@ -46,7 +46,7 @@ jobs:
     - name: Download artifact from build job
       uses: actions/download-artifact@v3
       with:
-        name: app
+        name: shell
 
     - name: 'Deploy to Server'
       id: deploy-to-server
