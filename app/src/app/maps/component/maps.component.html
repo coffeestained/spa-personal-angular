@@ -1,3 +1,18 @@
-<div class="map-container">
+<head>
+    <link
+    *ngIf="currentTheme === 'Dark'"
+    rel="stylesheet"
+    href="https://js.arcgis.com/4.28/@arcgis/core/assets/esri/themes/dark/main.css"
+    />
+    <link
+    *ngIf="currentTheme === 'Light'"
+    rel="stylesheet"
+    href="https://js.arcgis.com/4.28/@arcgis/core/assets/esri/themes/light/main.css"
+    />
+</head>
+
+<div class="map-container" [ngClass]="{
+    'map-container__dark': currentTheme === 'Dark',
+}">
     <div #map id="map" class="map"></div>
 </div>

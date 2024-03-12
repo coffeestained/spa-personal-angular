@@ -22,7 +22,7 @@ import { setLocale } from "@arcgis/core/intl";
 })
 export class MapsComponent implements AfterViewInit {
 
-    private currentTheme!: string;
+    public currentTheme!: string;
 
     #view!: MapView;
     #baseMap!: BaseMap;
@@ -44,8 +44,10 @@ export class MapsComponent implements AfterViewInit {
 
     private _registerListeners() {
         // Listen to global theme observable
+        console.log(window.__SharedService__.classes?.Observables);
         (window.__SharedService__.classes?.Observables.get('theme') as BehaviorSubject<string>)
             .subscribe((theme) => {
+                console.log("DEBUG: Child application received theme change:", theme);
                 this.currentTheme = theme;
             });
 
@@ -91,37 +93,13 @@ export class MapsComponent implements AfterViewInit {
             }
         });
 
-        // Full Screen
+        // Generate Full Screen Button
         const fullscreen = new Fullscreen({
             view: this.#view
         });
 
-        // Register
+        // Register Full Screen Button
         this.#view.ui.add(fullscreen, "top-right");
-
-        // Click 1 Function
-        var eventHandlerOne = (data: any) => {
-            this.#view.hitTest(data).then(function (response) {
-                if (response.results.length) {
-                    response.results.forEach((resp: any) => {
-                        const graphic = resp.graphic;
-                        const attributes = graphic.attributes;
-                        console.log(attributes);
-                    });
-                }
-            });
-        }
-
-        // Click Handler 1
-        this.#view.on("pointer-down", eventHandlerOne);
-
-        // Click Function 2 (Gis Coords)
-        function eventHandlerTwo(data: any) {
-            console.log(data)
-        }
-
-        // Click Handler 2
-        this.#view.on("click", eventHandlerTwo);
 
         // Legend Handler
         const legend = new Legend({
@@ -133,20 +111,51 @@ export class MapsComponent implements AfterViewInit {
             ],
         });
 
-        // Reigster Legend
+        // Register Legend
         this.#view.ui.add(legend, "top-left");
 
         // Zoom Default Move
         this.#view.ui.move("zoom", "top-right");
 
-        // Layer List Toggle
+        // Create Layer List
         const layerList = new LayerList({
             view: this.#view,
         });
 
-        // Register
+        // Register Layer List
         this.#view.ui.add(layerList, {
             position: "top-left",
         });
+
+        // Register Event Handlers
+        this._registerEventHandlers();
+    }
+
+    private _registerEventHandlers() {
+        // Event Handler 1 (Attributes for Layers)
+        const eventHandlerOne = (data: any) => {
+            this.#view.hitTest(data).then(function (response) {
+                if (response.results.length) {
+                    response.results.forEach((resp: any) => {
+                        const graphic = resp.graphic;
+                        const attributes = graphic.attributes;
+                        console.log(attributes);
+                    });
+                }
+            });
+        }
+
+        // Register Event Handler 1
+        this.#view.on("pointer-down", eventHandlerOne);
+
+
+        // Event Handler 2 (GIS Coords)
+        const eventHandlerTwo = (data: any) => {
+            console.log(data)
+        }
+
+        // Register Event Handler 2
+        this.#view.on("click", eventHandlerTwo);
+        
     }
 }
