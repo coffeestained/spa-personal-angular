@@ -10,3 +10,5 @@ Consider what permissions it may or may not need with Principle of Least Privile
 - Runner stages the repo to the server.
 - Set environment, install dependencies, build.
 - Clean up environment & artifacts of secrets.
+
+Example github pipeline can be found in the .github folder.
