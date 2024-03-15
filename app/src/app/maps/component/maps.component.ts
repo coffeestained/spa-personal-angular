@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { BehaviorSubject, zip } from 'rxjs';
 
 // Map Assets
@@ -44,7 +44,6 @@ export class MapsComponent implements AfterViewInit {
 
     private _registerListeners() {
         // Listen to global theme observable
-        console.log(window.__SharedService__.classes?.Observables);
         (window.__SharedService__.classes?.Observables.get('theme') as BehaviorSubject<string>)
             .subscribe((theme) => {
                 console.log("DEBUG: Child application received theme change:", theme);
@@ -156,6 +155,5 @@ export class MapsComponent implements AfterViewInit {
 
         // Register Event Handler 2
         this.#view.on("click", eventHandlerTwo);
-        
     }
 }
